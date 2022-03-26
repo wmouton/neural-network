@@ -42,20 +42,27 @@ def main():
     W1 = tf.Variable(W1_init.astype(np.float32))
     b1 = tf.Variable(b1_init.astype(np.float32))
     W2 = tf.Variable(W2_init.astype(np.float32))
-    b2 = tf.Variable(b2_init.astype(np.float32))
-    W3 = tf.Variable(W3_init.astype(np.float32))
-    b3 = tf.Variable(b3_init.astype(np.float32))
+    b2 = tf.Variable(b2_init.astype(np.float32))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1)
 
-    Z1 = tf.nn.relu( tf.matmul(X, W1) + b1 )
-    Z2 = tf.nn.relu( tf.matmul(Z1, W2) + b2 )
-    Yish = tf.matmul(Z2, W3) + b3
+    LL = []
+    init = tf.initialize_all_variables()
+    with tf.Session() as session:
+        session.run(init)
 
-    cost = tf.reduce_sum(tf.softmax_cross_entrophy_with_logits(Yish, T))
+        for i in xrange(max_iter):
+            for j in xrange(n_batches):
+                Xbatch = Xtrain[j*batch_sz:(j*batch_sz * batch_sz),]
+                Ybatch = Ytrain[j*batch_sz:(j*batch_sz * batch_sz),]
 
-    train_op = tf.train.RMApropOptimizer(lr, decay=0.99, momentum=0.9).minimize(cost)
-
-    predict_op = tf.argmax(Yish, 1)
-
+                session.run(train_op, feed_dict={X: Xbatch, T: Ybatch})
+                if j % print_period == 0:
+                    test_cost = session.run(cost, feed_dict={X: Xtest, T: Ytest_ind})
+                    prediction = session.run(predict_op, feed_dict={X: Xtest})
+                    err = error_rate(prediction, Ytest)
+                    print "Cost / err at iteration i=%d, j=%d: %.3f" % (i, j, test_cost, err)
+                    LL.append(test_cost)
+    plt.plot(LL)
+    plt.show()
 
 
 if __name__ == '__main__':
