@@ -46,7 +46,15 @@ def main():
     W3 = tf.Variable(W3_init.astype(np.float32))
     b3 = tf.Variable(b3_init.astype(np.float32))
 
+    Z1 = tf.nn.relu( tf.matmul(X, W1) + b1 )
+    Z2 = tf.nn.relu( tf.matmul(Z1, W2) + b2 )
+    Yish = tf.matmul(Z2, W3) + b3
 
+    cost = tf.reduce_sum(tf.softmax_cross_entrophy_with_logits(Yish, T))
+
+    train_op = tf.train.RMApropOptimizer(lr, decay=0.99, momentum=0.9).minimize(cost)
+
+    predict_op = tf.argmax(Yish, 1)
 
 
 
