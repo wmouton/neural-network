@@ -42,7 +42,7 @@ def main():
     W1 = tf.Variable(W1_init.astype(np.float32))
     b1 = tf.Variable(b1_init.astype(np.float32))
     W2 = tf.Variable(W2_init.astype(np.float32))
-    b2 = tf.Variable(b2_init.astype(np.float32))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1)
+    b2 = tf.Variable(b2_init.astype(np.float32))
 
     LL = []
     init = tf.initialize_all_variables()
